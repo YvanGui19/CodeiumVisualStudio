@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using System.IO;
 using static System.Net.Mime.MediaTypeNames;
+using System.Threading;
 
 namespace test_std2._1_library
 {
@@ -43,7 +44,9 @@ namespace test_std2._1_library
             var parameters = new ModelParams(modelPath)
             {
                 Seed = 1337,
-                GpuLayerCount = 10
+                GpuLayerCount = int.MaxValue,
+                FlashAttention = true,
+                ContextSize = 2048,
             };
 
             using var model = LLamaWeights.LoadFromFile(parameters);
@@ -60,7 +63,7 @@ namespace test_std2._1_library
             session.WithHistoryTransform(new PromptTemplateTransformer(model, withAssistant: true));
 
             // Add a transformer to eliminate printing the end of turn tokens, llama 3 specifically has an odd LF that gets printed sometimes
-            string eos = model.Tokens.EndOfSpeechToken ?? model.Tokens.EndOfTurnToken
+            string eos = model.Tokens.EndOfTurnToken ?? model.Tokens.EndOfSpeechToken
                 ?? throw new Exception("End of speech or turn token not found");
 
             session.WithOutputTransform(new LLamaTransforms.KeywordTextOutputStreamTransform(
@@ -92,14 +95,21 @@ namespace test_std2._1_library
                 Console.Write("Assistant> ");
 
                 // as each token (partial or whole word is streamed back) print it to the console, stream to web client, etc
+                CancellationTokenSource cancellationToken = new CancellationTokenSource();
                 var message = new ChatHistory.Message(AuthorRole.User, userInput);
                 await foreach (
                     var text
                     in session.ChatAsync(
                         message,
-                        inferenceParams))
+                        inferenceParams,
+                        cancellationToken.Token))
                 {
                     Console.ForegroundColor = ConsoleColor.White;
+                    if (string.IsNullOrEmpty(text))
+                    {
+                        cancellationToken.Cancel();
+                        break;
+                    }
                     Console.Write(text);
                 }
                 Console.WriteLine();
