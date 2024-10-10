@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.IO;
 using static System.Net.Mime.MediaTypeNames;
 using System.Threading;
+using System.Text;
 
 namespace test_std2._1_library
 {
@@ -97,6 +98,7 @@ namespace test_std2._1_library
                 // as each token (partial or whole word is streamed back) print it to the console, stream to web client, etc
                 CancellationTokenSource cancellationToken = new CancellationTokenSource();
                 var message = new ChatHistory.Message(AuthorRole.User, userInput);
+                var sb = new StringBuilder();
                 await foreach (
                     var text
                     in session.ChatAsync(
@@ -108,8 +110,11 @@ namespace test_std2._1_library
                     if (string.IsNullOrEmpty(text))
                     {
                         cancellationToken.Cancel();
+                        session.AddAssistantMessage(sb.ToString());
                         break;
                     }
+
+                    sb.Append(text);
                     Console.Write(text);
                 }
                 Console.WriteLine();
