@@ -110,10 +110,14 @@ public class LanguageServer
     // Get API key from the authentication token
     public async Task SignInWithAuthTokenAsync(string authToken)
     {
-        string url = _package.SettingsPage.EnterpriseMode
-                         ? _package.SettingsPage.ApiUrl +
-                               "/exa.seat_management_pb.SeatManagementService/RegisterUser"
-                         : "https://api.codeium.com/register_user/";
+        string url = _package.SettingsPage.EnterpriseMode switch
+        {
+            SettingsPage.EnterpriseModeEnum.True => _package.SettingsPage.ApiUrl +
+                                                   "/exa.seat_management_pb.SeatManagementService/RegisterUser",
+            SettingsPage.EnterpriseModeEnum.False => "https://api.codeium.com/register_user/",
+            // SettingsPage.EnterpriseModeEnum.Open => "",
+            _ => throw new NotSupportedException($"EnterpriseMode {_package.SettingsPage.EnterpriseMode} not supported")
+        };
 
         RegisterUserRequest data = new() { firebase_id_token = authToken };
         RegisterUserResponse result = await RequestUrlAsync<RegisterUserResponse>(url, data);
@@ -175,8 +179,13 @@ public class LanguageServer
         }
 
         string state = Guid.NewGuid().ToString();
-        string portalUrl = _package.SettingsPage.EnterpriseMode ? _package.SettingsPage.PortalUrl
-                                                                : "https://www.codeium.com";
+        string portalUrl = _package.SettingsPage.EnterpriseMode switch
+        {
+            SettingsPage.EnterpriseModeEnum.True => _package.SettingsPage.PortalUrl,
+            SettingsPage.EnterpriseModeEnum.False => "https://www.codeium.com",
+            // SettingsPage.EnterpriseModeEnum.Open => "",
+            _ => throw new NotSupportedException($"EnterpriseMode {_package.SettingsPage.EnterpriseMode} not supported")
+        };
         string redirectUrl = Uri.EscapeDataString($"http://127.0.0.1:{_port}/auth");
         string url =
             $"{portalUrl}/profile?response_type=token&redirect_uri={redirectUrl}&state={state}&scope=openid%20profile%20email&redirect_parameters_type=query";
@@ -209,7 +218,7 @@ public class LanguageServer
                  ? "https://github.com/Exafunction/codeium/releases/download"
                  : _package.SettingsPage.ExtensionBaseUrl.Trim().TrimEnd('/'));
 
-        if (_package.SettingsPage.EnterpriseMode)
+        if (_package.SettingsPage.EnterpriseMode == SettingsPage.EnterpriseModeEnum.True)
         {
             // Get the contents of /api/extension_base_url
             try
@@ -538,7 +547,7 @@ public class LanguageServer
             _process.StartInfo.Arguments +=
                 $" --enable_local_search --enable_index_service --search_max_workspace_file_count {_package.SettingsPage.IndexingMaxWorkspaceSize}";
 
-        if (_package.SettingsPage.EnterpriseMode)
+        if (_package.SettingsPage.EnterpriseMode == SettingsPage.EnterpriseModeEnum.True)
             _process.StartInfo.Arguments +=
                 $" --enterprise_mode --portal_url {_package.SettingsPage.PortalUrl}";
 

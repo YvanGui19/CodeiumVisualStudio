@@ -268,11 +268,13 @@ public sealed class CodeiumVSPackage : ToolkitPackage
 
     public string GetLanguageServerPath()
     {
-        string binaryName = "language_server_windows_x64.exe";
-        if (SettingsPage.EnterpriseMode)
+        string binaryName = SettingsPage.EnterpriseMode switch
         {
-            binaryName = "language_server_windows_x64_enterprise.exe";
-        }
+            SettingsPage.EnterpriseModeEnum.False => "language_server_windows_x64.exe",
+            SettingsPage.EnterpriseModeEnum.True => "language_server_windows_x64_enterprise.exe",
+            // SettingsPage.EnterpriseModeEnum.Open => "",
+            _ => throw new NotSupportedException($"Enterprise mode {SettingsPage.EnterpriseMode} not supported")
+        };
         return Path.Combine(GetLanguageServerFolder(), binaryName);
     }
 
@@ -281,7 +283,7 @@ public sealed class CodeiumVSPackage : ToolkitPackage
     public string GetAPIKeyPath() { return Path.Combine(GetAppDataPath(), "codeium_api_key"); }
 
     public bool IsSignedIn() { return LanguageServer.GetKey().Length > 0; }
-    public bool HasEnterprise() { return SettingsPage.EnterpriseMode; }
+    public bool HasEnterprise() { return SettingsPage.EnterpriseMode == SettingsPage.EnterpriseModeEnum.True; }
 
     internal void Log(string v)
     {

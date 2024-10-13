@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "std2.1_test", "std2.1_test\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "test_std2.1_library", "test_std2.1_library\test_std2.1_library.csproj", "{BE6EBA5D-C1FF-4AD6-BE4D-2D6167055D0C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LLamaSharp4Codium", "LLamaSharp4Codium\LLamaSharp4Codium.csproj", "{E06ED9AD-8C45-4EFC-8B31-61831D336250}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{BE6EBA5D-C1FF-4AD6-BE4D-2D6167055D0C}.Release|arm64.Build.0 = Release|Any CPU
 		{BE6EBA5D-C1FF-4AD6-BE4D-2D6167055D0C}.Release|x86.ActiveCfg = Release|Any CPU
 		{BE6EBA5D-C1FF-4AD6-BE4D-2D6167055D0C}.Release|x86.Build.0 = Release|Any CPU
+		{E06ED9AD-8C45-4EFC-8B31-61831D336250}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E06ED9AD-8C45-4EFC-8B31-61831D336250}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E06ED9AD-8C45-4EFC-8B31-61831D336250}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{E06ED9AD-8C45-4EFC-8B31-61831D336250}.Debug|arm64.Build.0 = Debug|Any CPU
+		{E06ED9AD-8C45-4EFC-8B31-61831D336250}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E06ED9AD-8C45-4EFC-8B31-61831D336250}.Debug|x86.Build.0 = Debug|Any CPU
+		{E06ED9AD-8C45-4EFC-8B31-61831D336250}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E06ED9AD-8C45-4EFC-8B31-61831D336250}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E06ED9AD-8C45-4EFC-8B31-61831D336250}.Release|arm64.ActiveCfg = Release|Any CPU
+		{E06ED9AD-8C45-4EFC-8B31-61831D336250}.Release|arm64.Build.0 = Release|Any CPU
+		{E06ED9AD-8C45-4EFC-8B31-61831D336250}.Release|x86.ActiveCfg = Release|Any CPU
+		{E06ED9AD-8C45-4EFC-8B31-61831D336250}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

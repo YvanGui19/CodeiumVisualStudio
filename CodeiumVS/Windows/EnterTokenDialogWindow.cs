@@ -45,8 +45,13 @@ public partial class EnterTokenDialogWindowControl : UserControl
         SettingsPage settingsPage = CodeiumVSPackage.Instance.SettingsPage;
 
         string state = Guid.NewGuid().ToString();
-        string portalUrl =
-            settingsPage.EnterpriseMode ? settingsPage.PortalUrl : "https://www.codeium.com";
+        string portalUrl = settingsPage.EnterpriseMode switch
+        {
+            SettingsPage.EnterpriseModeEnum.True => settingsPage.PortalUrl,
+            SettingsPage.EnterpriseModeEnum.False => "https://www.codeium.com",
+            // SettingsPage.EnterpriseModeEnum.Open => "https://www.codeium.com",
+            _ => throw new NotSupportedException($"EnterpriseMode {settingsPage.EnterpriseMode} not supported")
+        };
         string redirectUrl = "show-auth-token";
         string url =
             $"{portalUrl}/profile?response_type=token&redirect_uri={redirectUrl}&state={state}&scope=openid%20profile%20email&redirect_parameters_type=query";
